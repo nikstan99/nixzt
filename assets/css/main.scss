@@ -1,0 +1,68 @@
+@import "./custom-fonts.scss";
+
+/* Tailwind */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 
+ * Transitions
+ */
+//  Transition speed .1s
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.1s ease;
+}
+
+//  Transition speed .2s
+.fadeDown-enter-active,
+.fadeDown-leave-active,
+.fadeUp-enter-active,
+.fadeUp-leave-active,
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.2s ease;
+}
+
+// Fade
+.fade-enter-from,
+.fade-leave-to,
+.fadeDown-enter-from,
+.fadeDown-leave-to,
+.fadeUp-enter-from,
+.fadeUp-leave-to,
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-to,
+.fade-leave-from,
+.fadeDown-enter-to,
+.fadeDown-leave-from,
+.fadeUp-enter-to,
+.fadeUp-leave-from {
+  opacity: 1;
+}
+
+// FadeDown
+.fadeDown-enter-from,
+.fadeDown-leave-to {
+  transform: translateY(-100%);
+}
+
+.fadeDown-enter-to,
+.fadeDown-leave-from {
+  transform: translateY(0);
+}
+
+// FadeUp
+.fadeUp-enter-from,
+.fadeUp-leave-to {
+  transform: translateY(100%);
+}
+
+.fadeUp-enter-to,
+.fadeUp-leave-from {
+  transform: translateY(0);
+}
