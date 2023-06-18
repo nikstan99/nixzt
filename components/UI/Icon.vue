@@ -1,5 +1,5 @@
 <template>
-  <span>
+  <span :class="['icon', wrapperClass]">
     <svg v-bind="$attrs" v-if="svg" role="img">
       <use
         xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -31,6 +31,7 @@ export enum IconType {
  *
  */
 interface Props {
+  wrapperClass?: string,
   icon: string;
   type?: IconType;
   svg?: boolean;
