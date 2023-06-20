@@ -24,6 +24,37 @@
   transition: all 0.2s ease;
 }
 
+.expandFromTop-enter-active,
+.expandFromTop-leave-active,
+.expandFromBottom-enter-active,
+.expandFromBottom-leave-active {
+  transition: all 0.2s ease;
+}
+
+// Expand from top
+.expandFromTop-enter-from,
+.expandFromTop-leave-to {
+  transform-origin: top;
+  transform: scaleY(0);
+}
+.expandFromTop-enter-to,
+.expandFromTop-leave-from {
+  transform-origin: top;
+  transform: scaleY(1);
+}
+
+// Expand from bottom
+.expandFromBottom-enter-from,
+.expandFromBottom-leave-to {
+  transform-origin: bottom;
+  transform: scaleY(0);
+}
+.expandFromBottom-enter-to,
+.expandFromBottom-leave-from {
+  transform-origin: bottom;
+  transform: scaleY(1);
+}
+
 // Fade
 .fade-enter-from,
 .fade-leave-to,

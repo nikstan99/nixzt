@@ -11,29 +11,44 @@
     </UIButton>
     <Teleport to="body">
       <div
-        v-if="activeDropdownContent"
-        class="fixed h-full w-full"
+        :class="[
+          activeDropdownContent ? 'fixed' : '',
+          'h-full w-full top-0 left-0 right-0 bottom-0',
+        ]"
         @click="toggleDropdown"
       >
-        <div
-          :class="[
-            contentPosition,
-            'dropdown-content fixed flex flex-col items-stretch rounded-xl h-[180px] bg-white drop-shadow-lg select-none overflow-auto p-2',
-          ]"
-        >
-          <slot></slot>
-        </div>
+        <Transition name="fade">
+          <div
+            v-show="activeDropdownContent"
+            ref="dropdownContent"
+            :class="[
+              windowDropdownContentPositionY
+                ? windowDropdownContentPositionY
+                : contentPositionY,
+              windowDropdownContentPositionX
+                ? windowDropdownContentPositionX
+                : contentPositionX,
+              'dropdown-content fixed flex flex-col items-stretch rounded-xl h-[180px] bg-white drop-shadow select-none overflow-auto p-2',
+            ]"
+          >
+            <slot></slot>
+          </div>
+        </Transition>
       </div>
     </Teleport>
   </div>
 </template>
 
 <script lang="ts">
-export enum DropdownContentPosition {
-  TOP_LEFT = "dropdown-top dropdown-left",
-  TOP_RIGHT = "dropdown-top dropdown-right",
-  BOTTOM_LEFT = "dropdown-bottom dropdown-left",
-  BOTTOM_RIGHT = "dropdown-bottom dropdown-right",
+export enum DropdownContentPositionY {
+  NONE = "",
+  TOP = "dropdown-top",
+  BOTTOM = "dropdown-bottom",
+}
+export enum DropdownContentPositionX {
+  NONE = "",
+  LEFT = "dropdown-left",
+  RIGHT = "dropdown-right",
 }
 </script>
 
@@ -44,40 +59,72 @@ import { ButtonType, IconPosition } from "@/components/UI/Button.vue";
 interface Props {
   type: ButtonType;
   label: string;
-  contentPosition?: DropdownContentPosition;
+  contentPositionY?: DropdownContentPositionY;
+  contentPositionX?: DropdownContentPositionX;
 }
 const props = withDefaults(defineProps<Props>(), {
-  contentPosition: DropdownContentPosition.BOTTOM_RIGHT,
+  contentPositionY: DropdownContentPositionY.BOTTOM,
+  contentPositionX: DropdownContentPositionX.LEFT,
 });
 
 // Data (ref)
 const dropdownButton = ref<any>(null);
+const dropdownContent = ref<any>(null);
 const activeDropdownContent = ref<boolean>(false);
-let dropdownContentPosition = reactive<any>({});
+let dropdownContentCssPosition = reactive<any>({});
+const windowDropdownContentPositionX = ref<DropdownContentPositionX>(
+  DropdownContentPositionX.NONE
+);
+const windowDropdownContentPositionY = ref<DropdownContentPositionY>(
+  DropdownContentPositionY.NONE
+);
 
+// Make better keyboard navigation
 // When component is mounted
-onMounted(() => {
-
-  // Have a look into why getBoundingClientRect() isn't ready when changing routes/pages!!!
-  // Make better keyboard navigation
-  setTimeout(() => {
-    console.log(dropdownButton.value.$el.getBoundingClientRect());
-  }, 1000)
-  
-  const rect = dropdownButton.value.$el.getBoundingClientRect();
-  for (const key in rect) {
-    if (typeof rect[key] !== "function") {
-      Object.assign(dropdownContentPosition, { [key]: `${rect[key]}px` });
-    }
-  }
-});
+onMounted(() => window.addEventListener("resize", positionDropdownContent));
+onUnmounted(() =>
+  window.removeEventListener("resize", positionDropdownContent)
+);
 
 // Methods / functions
 const toggleDropdown = (event: any) => {
   if (!event.target.closest(".dropdown-content")) {
+    positionDropdownContent();
     activeDropdownContent.value = !activeDropdownContent.value;
   }
 };
+
+const positionDropdownContent = async () => {
+  await nextTick();
+
+  const rect = dropdownButton.value.$el.getBoundingClientRect();
+  for (const key in rect) {
+    if (typeof rect[key] !== "function") {
+      Object.assign(dropdownContentCssPosition, { [key]: `${rect[key]}px` });
+    }
+  }
+
+  await nextTick();
+
+  windowDropdownContentPositionX.value = DropdownContentPositionX.NONE;
+  windowDropdownContentPositionY.value = DropdownContentPositionY.NONE;
+
+  if (dropdownContent.value.offsetHeight > window.innerHeight - rect.bottom) {
+    windowDropdownContentPositionY.value = DropdownContentPositionY.TOP;
+  }
+
+  if (dropdownContent.value.offsetWidth > rect.right) {
+    windowDropdownContentPositionX.value = DropdownContentPositionX.LEFT;
+  }
+};
+
+watch(activeDropdownContent, () => {
+  useHead({
+    bodyAttrs: {
+      class: activeDropdownContent.value ? "overflow-y-hidden" : "",
+    },
+  });
+});
 </script>
 
 <style lang="postcss" scoped>
@@ -94,18 +141,18 @@ const toggleDropdown = (event: any) => {
 }
 
 .dropdown-top {
-  top: calc(v-bind("dropdownContentPosition.top") - var(--offset));
-  @apply -translate-y-full;
+  top: calc(v-bind("dropdownContentCssPosition.top") - var(--offset));
+  transform: translateY(-100%);
 }
 .dropdown-left {
-  left: v-bind("dropdownContentPosition.left");
+  left: v-bind("dropdownContentCssPosition.left");
 }
 .dropdown-bottom {
-  top: calc(v-bind("dropdownContentPosition.bottom") + var(--offset));
+  top: calc(v-bind("dropdownContentCssPosition.bottom") + var(--offset));
 }
 .dropdown-right {
-  left: v-bind("dropdownContentPosition.right");
-  @apply -translate-x-full;
+  left: v-bind("dropdownContentCssPosition.right");
+  transform: translateX(-100%);
 }
 </style>
 
