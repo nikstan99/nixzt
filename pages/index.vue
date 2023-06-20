@@ -38,6 +38,18 @@
           </li>
         </ul>
       </UIDropdown>
+      <UIDropdown class="self-end" :type="ButtonType.XLIGHT" label="test 2" :content-position-x="DropdownContentPositionX.RIGHT">
+        <ul class="list-disc list-inside">
+          <li v-for="post in response" :key="post.id">
+            <span>{{ post.title.rendered }}</span>
+          </li>
+        </ul>
+        <ul class="list-disc list-inside">
+          <li v-for="post in response" :key="post.id">
+            <span>{{ post.title.rendered }}</span>
+          </li>
+        </ul>
+      </UIDropdown>
     </div>
     <!-- <ul class="list-disc list-inside">
       <li v-for="post in response" :key="post.id">

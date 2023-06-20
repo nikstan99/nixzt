@@ -72,6 +72,7 @@ const dropdownButton = ref<any>(null);
 const dropdownContent = ref<any>(null);
 const activeDropdownContent = ref<boolean>(false);
 let dropdownContentCssPosition = reactive<any>({});
+let dropdownContentCssProperties = reactive<any>({});
 const windowDropdownContentPositionX = ref<DropdownContentPositionX>(
   DropdownContentPositionX.NONE
 );
@@ -81,36 +82,61 @@ const windowDropdownContentPositionY = ref<DropdownContentPositionY>(
 
 // Make better keyboard navigation
 // When component is mounted
-onMounted(() => window.addEventListener("resize", positionDropdownContent));
-onUnmounted(() =>
-  window.removeEventListener("resize", positionDropdownContent)
-);
+onMounted(() => window.addEventListener("resize", test));
+onUnmounted(() => window.removeEventListener("resize", test));
 
 // Methods / functions
 const toggleDropdown = (event: any) => {
   if (!event.target.closest(".dropdown-content")) {
-    positionDropdownContent();
     activeDropdownContent.value = !activeDropdownContent.value;
+
+    test();
   }
 };
 
-const positionDropdownContent = async () => {
-  await nextTick();
+// Todo FIX TEST !!!
 
-  const rect = dropdownButton.value.$el.getBoundingClientRect();
+const test = async () => {
+  await nextTick(() => {
+    setCssPositionOnDropdownContent(
+      getBoundingClientRectOfElement(dropdownButton.value.$el),
+      dropdownContentCssPosition
+    );
+    setCssPositionOnDropdownContent(
+      getBoundingClientRectOfElement(dropdownContent.value),
+      dropdownContentCssProperties
+    );
+  })
+};
+
+const getBoundingClientRectOfElement = (domElement: any) =>
+  domElement.getBoundingClientRect();
+
+const setCssPositionOnDropdownContent = (rect: any, cssProperties: object) => {
   for (const key in rect) {
     if (typeof rect[key] !== "function") {
-      Object.assign(dropdownContentCssPosition, { [key]: `${rect[key]}px` });
+      Object.assign(cssProperties, { [key]: `${rect[key]}px` });
     }
   }
+  bleedingDropdwonContent();
+};
 
-  await nextTick();
+const bleedingDropdwonContent = () => {
+  const rect = getBoundingClientRectOfElement(dropdownButton.value.$el);
 
   windowDropdownContentPositionX.value = DropdownContentPositionX.NONE;
   windowDropdownContentPositionY.value = DropdownContentPositionY.NONE;
 
   if (dropdownContent.value.offsetHeight > window.innerHeight - rect.bottom) {
     windowDropdownContentPositionY.value = DropdownContentPositionY.TOP;
+  }
+
+  if (dropdownContent.value.offsetHeight > rect.top) {
+    windowDropdownContentPositionY.value = DropdownContentPositionY.BOTTOM;
+  }
+
+  if (dropdownContent.value.offsetWidth > window.innerWidth - rect.right) {
+    windowDropdownContentPositionX.value = DropdownContentPositionX.RIGHT;
   }
 
   if (dropdownContent.value.offsetWidth > rect.right) {
@@ -141,8 +167,10 @@ watch(activeDropdownContent, () => {
 }
 
 .dropdown-top {
-  top: calc(v-bind("dropdownContentCssPosition.top") - var(--offset));
-  transform: translateY(-100%);
+  top: calc(
+    v-bind("dropdownContentCssPosition.top") - var(--offset) -
+      v-bind("dropdownContentCssProperties.height")
+  );
 }
 .dropdown-left {
   left: v-bind("dropdownContentCssPosition.left");
@@ -151,8 +179,10 @@ watch(activeDropdownContent, () => {
   top: calc(v-bind("dropdownContentCssPosition.bottom") + var(--offset));
 }
 .dropdown-right {
-  left: v-bind("dropdownContentCssPosition.right");
-  transform: translateX(-100%);
+  left: calc(
+    v-bind("dropdownContentCssPosition.right") -
+      v-bind("dropdownContentCssProperties.width")
+  );
 }
 </style>
 
