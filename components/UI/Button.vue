@@ -11,9 +11,9 @@
       :type="iconType"
       :wrapper-class="iconPosition"
     />
-    <span class="order-1">
-      <slot></slot>
-    </span>
+    <!-- <span class="order-1"> -->
+      <slot class="order-1"></slot>
+    <!-- </span> -->
   </button>
 </template>
 

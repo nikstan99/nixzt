@@ -9,6 +9,27 @@
       </li>
     </ul>
     <div class="flex flex-col justify-items-end items-start gap-3 text-sm">
+      <UIDropdown :type="ButtonType.XLIGHT" label="test">
+        <ul class="list-disc list-inside">
+          <li v-for="post in response" :key="post.id">
+            <span>{{ post.title.rendered }}</span>
+          </li>
+        </ul>
+      </UIDropdown>
+      <UIDropdown
+        class="self-end"
+        :type="ButtonType.NONE"
+        :content-position-x="DropdownContentPositionX.RIGHT"
+        icon="bars"
+        :rotate-icon="false"
+      >
+        <ul class="w-[200px] h-[200px] list-disc list-inside">
+          <li v-for="post in response" :key="post.id">
+            <span>{{ post.title.rendered }}</span>
+          </li>
+        </ul>
+      </UIDropdown>
+      <UIInput />
       <div class="flex gap-2">
         <UIButton :type="ButtonType.NONE"> Menu Item 1 </UIButton>
         <UIButton
@@ -31,25 +52,6 @@
         Log in or sign up
       </UIButton>
       <UIButton :type="ButtonType.LIGHT" icon="bars-filter"> Filters </UIButton>
-      <UIDropdown :type="ButtonType.XLIGHT" label="test">
-        <ul class="list-disc list-inside">
-          <li v-for="post in response" :key="post.id">
-            <span>{{ post.title.rendered }}</span>
-          </li>
-        </ul>
-      </UIDropdown>
-      <UIDropdown class="self-end" :type="ButtonType.XLIGHT" label="test 2" :content-position-x="DropdownContentPositionX.RIGHT">
-        <ul class="list-disc list-inside">
-          <li v-for="post in response" :key="post.id">
-            <span>{{ post.title.rendered }}</span>
-          </li>
-        </ul>
-        <ul class="list-disc list-inside">
-          <li v-for="post in response" :key="post.id">
-            <span>{{ post.title.rendered }}</span>
-          </li>
-        </ul>
-      </UIDropdown>
     </div>
     <!-- <ul class="list-disc list-inside">
       <li v-for="post in response" :key="post.id">

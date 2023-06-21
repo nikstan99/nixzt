@@ -1,9 +1,9 @@
 <template>
-  <div :class="['dropdown', activeDropdownContent ? 'active' : '']">
+  <div :class="['dropdown', activeDropdownContent ? 'active' : '', rotateIcon ? 'rotate' : '']">
     <UIButton
       ref="dropdownButton"
       :type="type"
-      icon="angle-down"
+      :icon="icon"
       :icon-position="IconPosition.RIGHT"
       @click="toggleDropdown"
     >
@@ -28,7 +28,7 @@
               windowDropdownContentPositionX
                 ? windowDropdownContentPositionX
                 : contentPositionX,
-              'dropdown-content fixed flex flex-col items-stretch rounded-xl h-[180px] bg-white drop-shadow select-none overflow-auto p-2',
+              'dropdown-content fixed flex flex-col items-stretch rounded-xl bg-white drop-shadow overflow-auto p-2',
             ]"
           >
             <slot></slot>
@@ -44,27 +44,36 @@ export enum DropdownContentPositionY {
   NONE = "",
   TOP = "dropdown-top",
   BOTTOM = "dropdown-bottom",
+  TOP_NO_BLEED = "dropdown-top top-[var(--offset)]",
+  BOTTOM_NO_BLEED = "dropdown-bottom bottom-[var(--offset)]",
 }
 export enum DropdownContentPositionX {
   NONE = "",
   LEFT = "dropdown-left",
   RIGHT = "dropdown-right",
+  LEFT_NO_BLEED = "dropdown-left right-[var(--offset)]",
+  RIGHT_NO_BLEED = "dropdown-right left-[var(--offset)]",
 }
 </script>
 
 <script setup lang="ts">
 import { ButtonType, IconPosition } from "@/components/UI/Button.vue";
+// TODO  Make better keyboard navigation
 
 // Props
 interface Props {
   type: ButtonType;
-  label: string;
+  label?: string;
+  icon?: string;
+  rotateIcon?: boolean;
   contentPositionY?: DropdownContentPositionY;
   contentPositionX?: DropdownContentPositionX;
 }
 const props = withDefaults(defineProps<Props>(), {
   contentPositionY: DropdownContentPositionY.BOTTOM,
   contentPositionX: DropdownContentPositionX.LEFT,
+  icon: "angle-down",
+  rotateIcon: true
 });
 
 // Data (ref)
@@ -73,6 +82,11 @@ const dropdownContent = ref<any>(null);
 const activeDropdownContent = ref<boolean>(false);
 let dropdownContentCssPosition = reactive<any>({});
 let dropdownContentCssProperties = reactive<any>({});
+let dropdownContentPositionOffset = ref<number>(10);
+let dropdownContentCssPositionOffset = ref<string>(
+  dropdownContentPositionOffset.value + "px"
+);
+
 const windowDropdownContentPositionX = ref<DropdownContentPositionX>(
   DropdownContentPositionX.NONE
 );
@@ -80,24 +94,19 @@ const windowDropdownContentPositionY = ref<DropdownContentPositionY>(
   DropdownContentPositionY.NONE
 );
 
-// Make better keyboard navigation
-// When component is mounted
-onMounted(() => window.addEventListener("resize", test));
-onUnmounted(() => window.removeEventListener("resize", test));
+onMounted(() => window.addEventListener("resize", eventListener));
+onUnmounted(() => window.removeEventListener("resize", eventListener));
 
 // Methods / functions
 const toggleDropdown = (event: any) => {
   if (!event.target.closest(".dropdown-content")) {
     activeDropdownContent.value = !activeDropdownContent.value;
-
-    test();
+    eventListener();
   }
 };
 
-// Todo FIX TEST !!!
-
-const test = async () => {
-  await nextTick(() => {
+const eventListener = () => {
+  nextTick(() => {
     setCssPositionOnDropdownContent(
       getBoundingClientRectOfElement(dropdownButton.value.$el),
       dropdownContentCssPosition
@@ -106,7 +115,7 @@ const test = async () => {
       getBoundingClientRectOfElement(dropdownContent.value),
       dropdownContentCssProperties
     );
-  })
+  });
 };
 
 const getBoundingClientRectOfElement = (domElement: any) =>
@@ -127,20 +136,49 @@ const bleedingDropdwonContent = () => {
   windowDropdownContentPositionX.value = DropdownContentPositionX.NONE;
   windowDropdownContentPositionY.value = DropdownContentPositionY.NONE;
 
-  if (dropdownContent.value.offsetHeight > window.innerHeight - rect.bottom) {
+  const top = rect.top - dropdownContentPositionOffset.value;
+  const bottom =
+    window.innerHeight - rect.bottom - dropdownContentPositionOffset.value;
+  const left = rect.left - dropdownContentPositionOffset.value;
+  const right =
+    window.innerWidth - rect.right - dropdownContentPositionOffset.value;
+
+  if (dropdownContent.value.offsetHeight > bottom)
     windowDropdownContentPositionY.value = DropdownContentPositionY.TOP;
-  }
 
-  if (dropdownContent.value.offsetHeight > rect.top) {
+  if (dropdownContent.value.offsetHeight > top)
     windowDropdownContentPositionY.value = DropdownContentPositionY.BOTTOM;
+
+  if (
+    dropdownContent.value.offsetHeight > bottom &&
+    dropdownContent.value.offsetHeight > top
+  ) {
+    if (top > bottom) {
+      windowDropdownContentPositionY.value =
+        DropdownContentPositionY.TOP_NO_BLEED;
+    } else {
+      windowDropdownContentPositionY.value =
+        DropdownContentPositionY.BOTTOM_NO_BLEED;
+    }
   }
 
-  if (dropdownContent.value.offsetWidth > window.innerWidth - rect.right) {
-    windowDropdownContentPositionX.value = DropdownContentPositionX.RIGHT;
-  }
-
-  if (dropdownContent.value.offsetWidth > rect.right) {
+  if (dropdownContent.value.offsetWidth > left)
     windowDropdownContentPositionX.value = DropdownContentPositionX.LEFT;
+
+  if (dropdownContent.value.offsetWidth > right)
+    windowDropdownContentPositionX.value = DropdownContentPositionX.RIGHT;
+
+  if (
+    dropdownContent.value.offsetWidth > left &&
+    dropdownContent.value.offsetWidth > right
+  ) {
+    if (left > right) {
+      windowDropdownContentPositionX.value =
+        DropdownContentPositionX.RIGHT_NO_BLEED;
+    } else {
+      windowDropdownContentPositionX.value =
+        DropdownContentPositionX.LEFT_NO_BLEED;
+    }
   }
 };
 
@@ -154,8 +192,14 @@ watch(activeDropdownContent, () => {
 </script>
 
 <style lang="postcss" scoped>
+.another-test {
+  z-index: -999;
+  visibility: hidden;
+  opacity: 0;
+}
+
 .dropdown-content {
-  --offset: 10px;
+  --offset: v-bind("dropdownContentCssPositionOffset");
 }
 
 .dropdown-content::-webkit-scrollbar {
@@ -167,10 +211,7 @@ watch(activeDropdownContent, () => {
 }
 
 .dropdown-top {
-  top: calc(
-    v-bind("dropdownContentCssPosition.top") - var(--offset) -
-      v-bind("dropdownContentCssProperties.height")
-  );
+  bottom: calc(100% - v-bind("dropdownContentCssPosition.top") + var(--offset));
 }
 .dropdown-left {
   left: v-bind("dropdownContentCssPosition.left");
@@ -179,18 +220,15 @@ watch(activeDropdownContent, () => {
   top: calc(v-bind("dropdownContentCssPosition.bottom") + var(--offset));
 }
 .dropdown-right {
-  left: calc(
-    v-bind("dropdownContentCssPosition.right") -
-      v-bind("dropdownContentCssProperties.width")
-  );
+  right: calc(100% - v-bind("dropdownContentCssPosition.right"));
 }
 </style>
 
 <style lang="postcss">
-.dropdown .icon i {
+.dropdown.rotate .icon i {
   @apply transition-all;
 }
-.dropdown.active .icon i {
+.dropdown.rotate.active .icon i {
   @apply rotate-180;
 }
 </style>
