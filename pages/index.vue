@@ -30,28 +30,23 @@
         </ul>
       </UIDropdown>
       <UIInput />
-      <div class="flex gap-2">
-        <UIButton :type="ButtonType.NONE"> Menu Item 1 </UIButton>
-        <UIButton
-          :type="ButtonType.NONE"
-          icon="angle-down"
-          :icon-position="IconPosition.RIGHT"
-        >
-          Menu Item 2
-        </UIButton>
-        <UIButton :type="ButtonType.NONE"> Menu Item 3 </UIButton>
-      </div>
+      
       <UIButton
-        :type="ButtonType.NONE"
+        :buttonType="ButtonType.NONE"
         icon="plus"
         class="text-brand-gray font-thin"
       >
         Add filter
       </UIButton>
-      <UIButton @click="useRouter().push('/about')" :type="ButtonType.DARK">
+      <UIButton
+        @click="useRouter().push('/about')"
+        :buttonType="ButtonType.DARK"
+      >
         Log in or sign up
       </UIButton>
-      <UIButton :type="ButtonType.LIGHT" icon="bars-filter"> Filters </UIButton>
+      <UIButton :buttonType="ButtonType.LIGHT" icon="bars-filter">
+        Filters
+      </UIButton>
     </div>
     <!-- <ul class="list-disc list-inside">
       <li v-for="post in response" :key="post.id">
