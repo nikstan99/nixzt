@@ -8,14 +8,14 @@
   >
     <UIButton
       ref="dropdownButton"
+      class="dropdown-button"
       :button-type="type"
       :icon="icon"
       :icon-position="IconPosition.RIGHT"
-      @click="toggleDropdown"
+      @click.stop="toggleDropdown"
     >
       {{ label }}
     </UIButton>
-    <!-- <Teleport to="body"> -->
     <Transition name="fade">
       <div
         :class="[
@@ -41,7 +41,6 @@
         </div>
       </div>
     </Transition>
-    <!-- </Teleport> -->
   </div>
 </template>
 
@@ -105,10 +104,20 @@ onUnmounted(() => window.removeEventListener("resize", eventListener));
 
 // Methods / functions
 const toggleDropdown = (event: any) => {
-  if (!event.target.closest(".dropdown-content")) {
+  console.log(event.target);
+
+  const execute = () => {
     activeDropdownContent.value = !activeDropdownContent.value;
     eventListener();
-  }
+  };
+
+  if (
+    !event.target.closest(".dropdown-content") ||
+    (event.target instanceof HTMLAnchorElement && event.target.href) ||
+    (event.target instanceof HTMLButtonElement &&
+      event.target.classList.contains("dropdown-button"))
+  )
+    execute();
 };
 
 const eventListener = () => {
