@@ -1,8 +1,10 @@
 <template>
-  <button
+  <component
+    :is="link ? NuxtLink : 'button'"
+    :to="link ? to : ''"
     :class="[
       'flex gap-2 font-medium rounded-lg py-2 px-3 transition-all',
-      type
+      buttonType,
     ]"
   >
     <UIIcon
@@ -11,10 +13,8 @@
       :type="iconType"
       :wrapper-class="iconPosition"
     />
-    <!-- <span class="order-1"> -->
-      <slot class="order-1"></slot>
-    <!-- </span> -->
-  </button>
+    <slot class="order-1"></slot>
+  </component>
 </template>
 
 <script lang="ts">
@@ -33,10 +33,14 @@ export enum IconPosition {
 
 <script setup lang="ts">
 interface Props {
-  type: ButtonType;
+  link?: boolean;
+  to?: string;
+  buttonType: ButtonType;
   icon?: string;
   iconType?: IconType;
   iconPosition?: IconPosition;
 }
 const props = defineProps<Props>();
+
+const NuxtLink = resolveComponent("NuxtLink");
 </script>

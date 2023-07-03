@@ -1,45 +1,52 @@
 <template>
-  <div :class="['dropdown', activeDropdownContent ? 'active' : '', rotateIcon ? 'rotate' : '']">
+  <div
+    :class="[
+      'dropdown',
+      activeDropdownContent ? 'active' : '',
+      rotateIcon ? 'rotate' : '',
+    ]"
+  >
     <UIButton
       ref="dropdownButton"
-      :type="type"
+      :button-type="type"
       :icon="icon"
       :icon-position="IconPosition.RIGHT"
       @click="toggleDropdown"
     >
       {{ label }}
     </UIButton>
-    <Teleport to="body">
+    <!-- <Teleport to="body"> -->
+    <Transition name="fade">
       <div
         :class="[
           activeDropdownContent ? 'fixed' : '',
           'h-full w-full top-0 left-0 right-0 bottom-0',
         ]"
         @click="toggleDropdown"
+        v-show="activeDropdownContent"
       >
-        <Transition name="fade">
-          <div
-            v-show="activeDropdownContent"
-            ref="dropdownContent"
-            :class="[
-              windowDropdownContentPositionY
-                ? windowDropdownContentPositionY
-                : contentPositionY,
-              windowDropdownContentPositionX
-                ? windowDropdownContentPositionX
-                : contentPositionX,
-              'dropdown-content fixed flex flex-col items-stretch rounded-xl bg-white drop-shadow overflow-auto p-2',
-            ]"
-          >
-            <slot></slot>
-          </div>
-        </Transition>
+        <div
+          ref="dropdownContent"
+          :class="[
+            windowDropdownContentPositionY
+              ? windowDropdownContentPositionY
+              : contentPositionY,
+            windowDropdownContentPositionX
+              ? windowDropdownContentPositionX
+              : contentPositionX,
+            'dropdown-content fixed flex flex-col items-stretch rounded-xl bg-white drop-shadow overflow-auto p-2',
+          ]"
+        >
+          <slot></slot>
+        </div>
       </div>
-    </Teleport>
+    </Transition>
+    <!-- </Teleport> -->
   </div>
 </template>
 
 <script lang="ts">
+import { ButtonType, IconPosition } from "@/components/UI/Button.vue";
 export enum DropdownContentPositionY {
   NONE = "",
   TOP = "dropdown-top",
@@ -57,7 +64,6 @@ export enum DropdownContentPositionX {
 </script>
 
 <script setup lang="ts">
-import { ButtonType, IconPosition } from "@/components/UI/Button.vue";
 // TODO  Make better keyboard navigation
 
 // Props
@@ -73,7 +79,7 @@ const props = withDefaults(defineProps<Props>(), {
   contentPositionY: DropdownContentPositionY.BOTTOM,
   contentPositionX: DropdownContentPositionX.LEFT,
   icon: "angle-down",
-  rotateIcon: true
+  rotateIcon: true,
 });
 
 // Data (ref)
