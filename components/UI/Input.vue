@@ -1,23 +1,61 @@
 <template>
-  <div>
+  <div class="text-sm">
     <label
-      for="input-group-1"
-      class="block mb-2 text-sm font-medium text-gray-900"
+      v-if="inputLabel"
+      :for="inputId"
+      class="block mb-2 font-medium text-brand-black"
     >
-      Your Email
+      {{ inputLabel }}
     </label>
     <div class="relative mb-6">
       <div
+        v-if="inputIcon"
         class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
       >
-        <UIIcon class="text-xl" icon="envelope" />
+        <UIIcon class="text-lg" :icon="inputIcon" />
       </div>
       <input
-        type="text"
-        id="input-group-1"
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
-        placeholder="name@flowbite.com"
+        :type="inputType"
+        :required="inputRequired"
+        :value="modelValue"
+        @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+        :id="inputId"
+        :class="[
+          'bg-brand-light-gray border-2 border-brand-light-gray text-brand-black placeholder:text-brand-gray rounded-xl outline-none focus:border-brand-black transition-all w-full px-3 py-2',
+          inputIcon ? 'pl-10' : '',
+        ]"
+        :placeholder="inputPlaceholder"
       />
     </div>
   </div>
 </template>
+
+<script lang="ts">
+export enum InputType {
+  HIDDEN = "hidden",
+  EMAIL = "email",
+  NUMBER = "number",
+  PASSWORD = "password",
+  SEARCH = "search",
+  TEL = "tel",
+  TEXT = "text",
+  URL = "url",
+}
+</script>
+
+<script setup lang="ts">
+interface Props {
+  inputId: string;
+  inputType: InputType;
+  inputLabel?: string;
+  inputRequired?: boolean;
+  inputPlaceholder?: string;
+  inputIcon?: string;
+  modelValue: string | number;
+}
+const props = defineProps<Props>();
+
+const emits = defineEmits<{
+  "update:modelValue": [value: HTMLInputElement];
+}>();
+</script>

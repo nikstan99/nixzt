@@ -16,7 +16,8 @@ module.exports = {
         "brand-black": "#151515",
         "brand-white": "#FFFFFF",
         "brand-gray": "#7E7E7E",
-        "brand-light-gray": "#E0E0E0",
+        "brand-light-gray": "#EDEDED",
+        "brand-washed-white": "#CFCFCF",
       },
       fontFamily: {
         'sans': ["Basier Square", "sans-serif"],

@@ -1,11 +1,11 @@
 <template>
   <div class="flex items-center gap-4">
-    <UIButton @click="useRouter().push('/about')" :buttonType="ButtonType.DARK">
+    <UIButton @click="useRouter().push('/about')" :button-style="ButtonStyle.DARK">
       Log in or sign up
     </UIButton>
     <UIDropdown
       class="self-end"
-      :type="ButtonType.NONE"
+      :type="ButtonStyle.NONE"
       :content-position-x="DropdownContentPositionX.RIGHT"
       icon="bars"
       :rotate-icon="false"
@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { ButtonType, IconPosition } from "@/components/UI/Button.vue";
+import { ButtonStyle, IconPosition } from "@/components/UI/Button.vue";
 import {
   DropdownContentPositionX,
   DropdownContentPositionY,

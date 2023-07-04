@@ -9,7 +9,7 @@
     <UIButton
       ref="dropdownButton"
       class="dropdown-button"
-      :button-type="type"
+      :button-style="type"
       :icon="icon"
       :icon-position="IconPosition.RIGHT"
       @click.stop="toggleDropdown"
@@ -20,7 +20,7 @@
       <div
         :class="[
           activeDropdownContent ? 'fixed' : '',
-          'h-full w-full top-0 left-0 right-0 bottom-0',
+          'h-full w-full top-0 left-0 right-0 bottom-0 z-10',
         ]"
         @click="toggleDropdown"
         v-show="activeDropdownContent"
@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { ButtonType, IconPosition } from "@/components/UI/Button.vue";
+import { ButtonStyle, IconPosition } from "@/components/UI/Button.vue";
 export enum DropdownContentPositionY {
   NONE = "",
   TOP = "dropdown-top",
@@ -67,7 +67,7 @@ export enum DropdownContentPositionX {
 
 // Props
 interface Props {
-  type: ButtonType;
+  type: ButtonStyle;
   label?: string;
   icon?: string;
   rotateIcon?: boolean;

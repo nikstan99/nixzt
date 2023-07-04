@@ -11,7 +11,7 @@
     :target="menuItem.targetBlank ? '_blank' : '_self'"
     :icon="menuItem.targetBlank ? 'arrow-up-right' : ''"
     :icon-position="IconPosition.RIGHT"
-    :buttonType="menuItemType"
+    :button-style="menuItemType"
     :type="menuItemType"
     :content-position-x="menuItemChildrenPosition"
     :label="menuItem.name"
@@ -22,7 +22,7 @@
         :key="menuItem.id"
         :menu-item="menuItem"
         :menu-item-children="menuItem.children"
-        :menuItemType="ButtonType.NONE"
+        :menuItemType="ButtonStyle.NONE"
       />
     </template>
     <template v-else>
@@ -36,7 +36,7 @@
 import UIButton from "@/components/UI/Button.vue";
 import UIDropdown from "@/components/UI/Dropdown.vue";
 // Enums from components
-import { ButtonType, IconPosition } from "@/components/UI/Button.vue";
+import { ButtonStyle, IconPosition } from "@/components/UI/Button.vue";
 import {
   DropdownContentPositionX,
   DropdownContentPositionY,
@@ -45,11 +45,11 @@ import {
 interface Props {
   menuItem: any | object;
   menuItemChildren?: any | object | object[];
-  menuItemType?: ButtonType;
+  menuItemType?: ButtonStyle;
   menuItemChildrenPosition?: DropdownContentPositionX;
 }
 const props = withDefaults(defineProps<Props>(), {
-  menuItemType: ButtonType.NONE,
+  menuItemType: ButtonStyle.NONE,
   menuItemChildrenPosition: DropdownContentPositionX.LEFT,
 });
 
