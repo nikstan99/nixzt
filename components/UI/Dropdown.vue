@@ -8,7 +8,7 @@
   >
     <UIButton
       ref="dropdownButton"
-      class="dropdown-button"
+      class="dropdown-button w-full flex justify-between"
       :button-style="type"
       :icon="icon"
       :icon-position="IconPosition.RIGHT"

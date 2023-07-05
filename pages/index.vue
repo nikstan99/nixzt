@@ -21,15 +21,22 @@
             </li>
           </ul>
         </UIDropdown>
-        <form @submit.prevent="console.log(testInput)">
+        <form
+          @submit.prevent="console.log(testInput)"
+          class="flex flex-col gap-5 items-start w-[300px]"
+        >
           <UIInput
             v-model="testInput"
             input-id="one"
             :input-type="InputType.TEXT"
             input-label="Email"
             input-placeholder="example@email.com"
-            input-icon="envelope"
-            class="w-[300px]"
+            class="w-full"
+          />
+          <UISelect
+            v-model="selectedItem"
+            :items="selectItems"
+            @testing="(item) => (selectedItem = item)"
           />
           <UIButton
             :button-style="ButtonStyle.DARK"
@@ -87,10 +94,17 @@ import {
   IconPosition,
 } from "@/components/UI/Button.vue";
 import { InputType } from "@/components/UI/Input.vue";
+import { Item } from "@/components/UI/Select.vue";
 
 const { data: response } = useFetch<any>(
   "http://nixzt.wpengine.com/wp-json/wp/v2/posts"
 );
 
-const testInput = ref<number>(748);
+const testInput = ref<string>();
+const selectItems = reactive<Item[]>([
+  { id: 1, name: "sting" },
+  { id: 2, name: "sting 2" },
+  { id: 3, name: "sting 3" },
+]);
+let selectedItem = reactive<Item>(selectItems[1]);
 </script>
