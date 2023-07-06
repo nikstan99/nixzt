@@ -8,13 +8,19 @@
   >
     <UIButton
       ref="dropdownButton"
-      class="dropdown-button w-full flex justify-between"
+      :class="[
+        'dropdown-button w-full flex justify-between',
+        activeDropdownContent ? 'relative z-20' : '',
+      ]"
       :button-style="type"
       :icon="icon"
       :icon-position="IconPosition.RIGHT"
       @click.stop="toggleDropdown"
     >
-      {{ label }}
+      <template v-if="!slotToggle">
+        {{ label }}
+      </template>
+      <slot v-else name="toggle"></slot>
     </UIButton>
     <Transition name="fade">
       <div
@@ -34,6 +40,7 @@
             windowDropdownContentPositionX
               ? windowDropdownContentPositionX
               : contentPositionX,
+            dropdownWidth,
             'dropdown-content fixed flex flex-col items-stretch rounded-xl bg-white drop-shadow overflow-auto p-2',
           ]"
         >
@@ -46,6 +53,10 @@
 
 <script lang="ts">
 import { ButtonStyle, IconPosition } from "@/components/UI/Button.vue";
+export enum DropdownWidth {
+  AUTO = "",
+  FULL = "dropdown-left dropdown-right",
+}
 export enum DropdownContentPositionY {
   NONE = "",
   TOP = "dropdown-top",
@@ -69,8 +80,10 @@ export enum DropdownContentPositionX {
 interface Props {
   type: ButtonStyle;
   label?: string;
+  slotToggle?: boolean;
   icon?: string;
   rotateIcon?: boolean;
+  dropdownWidth?: DropdownWidth;
   contentPositionY?: DropdownContentPositionY;
   contentPositionX?: DropdownContentPositionX;
 }
@@ -79,7 +92,10 @@ const props = withDefaults(defineProps<Props>(), {
   contentPositionX: DropdownContentPositionX.LEFT,
   icon: "angle-down",
   rotateIcon: true,
+  slotToggle: false,
 });
+
+const emits = defineEmits(["active"]);
 
 // Data (ref)
 const dropdownButton = ref<any>(null);
@@ -103,19 +119,20 @@ onMounted(() => window.addEventListener("resize", eventListener));
 onUnmounted(() => window.removeEventListener("resize", eventListener));
 
 // Methods / functions
-const toggleDropdown = (event: any) => {
-  console.log(event.target);
-
+const toggleDropdown = (event: MouseEvent, force?: boolean) => {
+  const target = (event.target as Element);
+ 
   const execute = () => {
     activeDropdownContent.value = !activeDropdownContent.value;
     eventListener();
+    emits("active", activeDropdownContent.value);
   };
 
   if (
-    !event.target.closest(".dropdown-content") ||
-    (event.target instanceof HTMLAnchorElement && event.target.href) ||
-    (event.target instanceof HTMLButtonElement &&
-      event.target.classList.contains("dropdown-button"))
+    !target.closest(".dropdown-content") ||
+    (target instanceof HTMLAnchorElement && target.href) ||
+    (target instanceof HTMLButtonElement)||
+    (force)
   )
     execute();
 };
@@ -203,6 +220,10 @@ watch(activeDropdownContent, () => {
       class: activeDropdownContent.value ? "overflow-y-hidden" : "",
     },
   });
+});
+// Expose methdos for other components. For example the parent can toggle the dropdown
+defineExpose({
+  toggleDropdown,
 });
 </script>
 

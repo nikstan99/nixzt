@@ -11,7 +11,7 @@
         <UIIcon class="text-lg" :icon="inputIcon" />
       </div>
       <input
-        v-focus="false"
+        v-focus="autoFocus"
         :type="inputType"
         :required="inputRequired"
         :value="modelValue"
@@ -20,8 +20,9 @@
         "
         :id="inputId"
         :class="[
-          'bg-brand-light-gray border-2 border-brand-light-gray text-brand-black placeholder:text-brand-gray rounded-xl outline-none focus:border-brand-black transition-all w-full px-3 py-2',
+          'outline-none transition-all w-full',
           inputIcon ? 'pl-10' : '',
+          inputStyle,
         ]"
         :placeholder="inputPlaceholder"
       />
@@ -40,6 +41,13 @@ export enum InputType {
   TEXT = "text",
   URL = "url",
 }
+
+const baseInputClasses = "px-3 py-2 border-2 rounded-xl";
+export enum InputStyle {
+  NONE = "bg-transparent text-current p-0",
+  LIGHT = baseInputClasses + " " + "bg-brand-light-gray border-brand-light-gray text-brand-black placeholder:text-brand-gray focus:border-brand-black",
+  DARK = baseInputClasses + " " + "bg-brand-black text-white",
+}
 </script>
 
 <script setup lang="ts">
@@ -50,14 +58,21 @@ interface Props {
   inputRequired?: boolean;
   inputPlaceholder?: string;
   inputIcon?: string;
+  inputStyle?: InputStyle;
   modelValue: any;
+  autoFocus?: boolean;
 }
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  autoFocus: false,
+  inputStyle: InputStyle.LIGHT,
+});
 
 const emits = defineEmits(["update:modelValue"]);
 
 // Custom "v-focus" directive
 const vFocus = {
-  mounted: (element: any) => element.focus(),
+  mounted: (element: HTMLElement, binding: any) => {
+    if (binding.value) element.focus();
+  },
 };
 </script>

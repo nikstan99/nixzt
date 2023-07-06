@@ -22,7 +22,7 @@
           </ul>
         </UIDropdown>
         <form
-          @submit.prevent="console.log(testInput)"
+          @submit.prevent="console.log(testInput, selectedItem)"
           class="flex flex-col gap-5 items-start w-[300px]"
         >
           <UIInput
@@ -34,9 +34,12 @@
             class="w-full"
           />
           <UISelect
-            v-model="selectedItem"
+            select-id="selectTets"
+            label="Selct one"
+            v-model="selectedItem.name"
             :items="selectItems"
-            @testing="(item) => (selectedItem = item)"
+            class="w-full"
+            @select-item="testing"
           />
           <UIButton
             :button-style="ButtonStyle.DARK"
@@ -106,5 +109,8 @@ const selectItems = reactive<Item[]>([
   { id: 2, name: "sting 2" },
   { id: 3, name: "sting 3" },
 ]);
-let selectedItem = reactive<Item>(selectItems[1]);
+const selectedItem = ref<Item>(selectItems[1]);
+const testing = (item: any) => {
+  selectedItem.value = item;
+}
 </script>
