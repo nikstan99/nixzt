@@ -22,8 +22,8 @@
 import { IconType } from "./Icon.vue";
 export enum ButtonStyle {
   NONE = "hover:bg-stone-100",
-  DARK = "bg-brand-black text-white hover:bg-neutral-700",
-  LIGHT = "bg-brand-light-gray text-brand-black hover:bg-stone-200",
+  DARK = "bg-brand-black border border-transparent text-white hover:bg-neutral-700",
+  LIGHT = "bg-brand-light-gray border border-transparent text-brand-black hover:bg-stone-200",
   XLIGHT = "bg-white border border-brand-light-gray text-brand-black hover:bg-stone-100",
 }
 export enum ButtonType {

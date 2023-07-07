@@ -105,12 +105,13 @@ const { data: response } = useFetch<any>(
 
 const testInput = ref<string>();
 const selectItems = reactive<Item[]>([
-  { id: 1, name: "sting" },
-  { id: 2, name: "sting 2" },
-  { id: 3, name: "sting 3" },
+  { id: 1, name: "Select one", placeholder: true },
+  { id: 2, name: "sting" },
+  { id: 3, name: "sting 2" },
+  { id: 4, name: "sting 3" },
 ]);
-const selectedItem = ref<Item>(selectItems[1]);
+const selectedItem = ref<Item>(selectItems[0]);
 const testing = (item: any) => {
   selectedItem.value = item;
-}
+};
 </script>

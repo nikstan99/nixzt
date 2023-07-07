@@ -45,8 +45,8 @@ export enum InputType {
 const baseInputClasses = "px-3 py-2 border-2 rounded-xl";
 export enum InputStyle {
   NONE = "bg-transparent text-current p-0",
-  LIGHT = baseInputClasses + " " + "bg-brand-light-gray border-brand-light-gray text-brand-black placeholder:text-brand-gray focus:border-brand-black",
-  DARK = baseInputClasses + " " + "bg-brand-black text-white",
+  LIGHT = baseInputClasses + " " + "bg-brand-light-gray border-brand-light-gray text-brand-black hover:bg-stone-200 placeholder:text-brand-gray focus:border-brand-black",
+  DARK = baseInputClasses + " " + "bg-brand-black text-white hover:bg-neutral-700",
 }
 </script>
 

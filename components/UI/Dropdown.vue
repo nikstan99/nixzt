@@ -22,7 +22,11 @@
       </template>
       <slot v-else name="toggle"></slot>
     </UIButton>
-    <Transition name="fade">
+    <Transition
+      name="fade"
+      @before-enter="$emit('transitionStart')"
+      @after-leave="$emit('transitionEnd')"
+    >
       <div
         :class="[
           activeDropdownContent ? 'fixed' : '',
@@ -95,11 +99,11 @@ const props = withDefaults(defineProps<Props>(), {
   slotToggle: false,
 });
 
-const emits = defineEmits(["active"]);
+const emits = defineEmits(["active", "transitionStart", "transitionEnd"]);
 
 // Data (ref)
 const dropdownButton = ref<any>(null);
-const dropdownContent = ref<any>(null);
+const dropdownContent = ref<HTMLElement>();
 const activeDropdownContent = ref<boolean>(false);
 let dropdownContentCssPosition = reactive<any>({});
 let dropdownContentCssProperties = reactive<any>({});
@@ -120,8 +124,8 @@ onUnmounted(() => window.removeEventListener("resize", eventListener));
 
 // Methods / functions
 const toggleDropdown = (event: MouseEvent, force?: boolean) => {
-  const target = (event.target as Element);
- 
+  const target = event.target as Element;
+
   const execute = () => {
     activeDropdownContent.value = !activeDropdownContent.value;
     eventListener();
@@ -131,8 +135,8 @@ const toggleDropdown = (event: MouseEvent, force?: boolean) => {
   if (
     !target.closest(".dropdown-content") ||
     (target instanceof HTMLAnchorElement && target.href) ||
-    (target instanceof HTMLButtonElement)||
-    (force)
+    target instanceof HTMLButtonElement ||
+    force
   )
     execute();
 };
@@ -175,15 +179,15 @@ const bleedingDropdwonContent = () => {
   const right =
     window.innerWidth - rect.right - dropdownContentPositionOffset.value;
 
-  if (dropdownContent.value.offsetHeight > bottom)
+  if (dropdownContent.value!.offsetHeight > bottom)
     windowDropdownContentPositionY.value = DropdownContentPositionY.TOP;
 
-  if (dropdownContent.value.offsetHeight > top)
+  if (dropdownContent.value!.offsetHeight > top)
     windowDropdownContentPositionY.value = DropdownContentPositionY.BOTTOM;
 
   if (
-    dropdownContent.value.offsetHeight > bottom &&
-    dropdownContent.value.offsetHeight > top
+    dropdownContent.value!.offsetHeight > bottom &&
+    dropdownContent.value!.offsetHeight > top
   ) {
     if (top > bottom) {
       windowDropdownContentPositionY.value =
@@ -194,15 +198,15 @@ const bleedingDropdwonContent = () => {
     }
   }
 
-  if (dropdownContent.value.offsetWidth > left)
+  if (dropdownContent.value!.offsetWidth > left)
     windowDropdownContentPositionX.value = DropdownContentPositionX.LEFT;
 
-  if (dropdownContent.value.offsetWidth > right)
+  if (dropdownContent.value!.offsetWidth > right)
     windowDropdownContentPositionX.value = DropdownContentPositionX.RIGHT;
 
   if (
-    dropdownContent.value.offsetWidth > left &&
-    dropdownContent.value.offsetWidth > right
+    dropdownContent.value!.offsetWidth > left &&
+    dropdownContent.value!.offsetWidth > right
   ) {
     if (left > right) {
       windowDropdownContentPositionX.value =

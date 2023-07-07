@@ -12,10 +12,11 @@
       :id="selectId"
       class="w-full"
       :dropdown-width="DropdownWidth.FULL"
-      :type="ButtonStyle.XLIGHT"
+      :type="activeSearch ? ButtonStyle.XLIGHT : ButtonStyle.LIGHT"
       :label="modelValue"
       :slot-toggle="activeSearch"
       @active="activeSearch = !activeSearch"
+      @transition-end="resetSearchResults"
     >
       <template #toggle>
         <UIInput
@@ -47,6 +48,7 @@
 export type Item = {
   id: number;
   name: string;
+  placeholder?: boolean;
 };
 </script>
 
@@ -79,6 +81,10 @@ const setSearchResults = () => {
     item.name.toLowerCase().includes(search.value.toLowerCase())
   );
 };
+const resetSearchResults = () => {
+  search.value = "";
+  searchResults.value = props.items;
+}
 const toggleDropdown = (event: MouseEvent, force?: boolean) => {
   if (!(event.target as Element).classList.contains("select-search"))
     uiDropdown.value.toggleDropdown(event, force);
@@ -86,11 +92,5 @@ const toggleDropdown = (event: MouseEvent, force?: boolean) => {
 const selectItem = (event: MouseEvent, item: Item) => {
   emits("selectItem", item);
   toggleDropdown(event, true);
-  
-  // Fix this
-  window.addEventListener("transitionend", () => {
-    search.value = "";
-    setSearchResults();
-  });
 };
 </script>
