@@ -2,32 +2,36 @@
 export default defineNuxtConfig({
   app: {
     head: {
-      title: "nixzt.",
+      title: 'nixzt.',
       link: [
         {
-          rel: "stylesheet",
-          href: "/fontawesome/css/fontawesome.min.css",
+          rel: 'stylesheet',
+          href: '/fontawesome/css/fontawesome.min.css',
         },
         {
-          rel: "stylesheet",
-          href: "/fontawesome/css/brands.min.css",
+          rel: 'stylesheet',
+          href: '/fontawesome/css/brands.min.css',
         },
         {
-          rel: "stylesheet",
-          href: "/fontawesome/css/solid.min.css",
+          rel: 'stylesheet',
+          href: '/fontawesome/css/solid.min.css',
         },
         {
-          rel: "stylesheet",
-          href: "/fontawesome/css/regular.min.css",
+          rel: 'stylesheet',
+          href: '/fontawesome/css/regular.min.css',
         },
       ],
     },
-    pageTransition: { name: 'page', mode: 'out-in' }
+    pageTransition: { name: 'page', mode: 'out-in' },
   },
   devtools: { enabled: true },
-  modules: [
-    '@nuxtjs/tailwindcss'
-  ],
+  modules: ['@nuxtjs/tailwindcss', '@nuxtjs/color-mode'],
+  colorMode: {
+    classSuffix: '',
+  },
+  tailwindcss: {
+    exposeConfig: true,
+  },
   css: ['~/assets/css/main.scss'],
   postcss: {
     plugins: {
@@ -37,4 +41,4 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-})
+});

@@ -1,8 +1,8 @@
 <template>
   <div class="flex items-center gap-8">
     <NuxtLink to="/">
-      <h1 class="font-Caros font-extrabold text-5xl">
-        nixzt<span class="text-brand-gray">.</span>
+      <h1 class="font-Caros font-extrabold text-4xl">
+        nixzt<span class="text-brand-gray">.ui</span>
       </h1>
     </NuxtLink>
     <Menu class="main-menu" :menu-items="menuItems" />
@@ -11,10 +11,10 @@
 
 <script setup lang="ts">
 const menuItems = reactive([
-  { id: 1, name: "Menu item 1", link: "/" },
+  { id: 1, name: "Home", link: "/" },
   {
     id: 2,
-    name: "Menu item 2",
+    name: "Browse",
     children: [
       { id: 3, name: "Submenu item 1", link: "/contact" },
       {
@@ -30,16 +30,3 @@ const menuItems = reactive([
   },
 ]);
 </script>
-
-<style lang="postcss">
-.main-menu {
-  .menu-item {
-    @apply text-brand-gray;
-
-    &.router-link-active,
-    &.menu-item-active {
-      @apply text-brand-black;
-    }
-  }
-}
-</style>

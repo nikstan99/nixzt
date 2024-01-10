@@ -3,7 +3,9 @@
     <div class="py-4 flex items-center justify-between gap-8">
       <HeaderNav />
       <!-- <HeaderSearch /> -->
-      <HeaderMisc />
+      <div class="flex items-center justify-between gap-5">
+        <HeaderMisc />
+      </div>
     </div>
   </div>
 </template>

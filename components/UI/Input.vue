@@ -1,8 +1,6 @@
 <template>
   <div class="text-sm font-semibold">
-    <label v-if="inputLabel" :for="inputId" class="block mb-2 text-brand-black">
-      {{ inputLabel }}
-    </label>
+    <UIInputLabel :text="inputLabel" :for-input="inputId" />
     <div class="relative">
       <div
         v-if="inputIcon"
@@ -42,11 +40,24 @@ export enum InputType {
   URL = "url",
 }
 
-const baseInputClasses = "px-3 py-2 border-2 rounded-xl";
+const baseInputClasses = "px-3 py-2 border rounded-xl";
 export enum InputStyle {
-  NONE = "bg-transparent text-current p-0",
-  LIGHT = baseInputClasses + " " + "bg-brand-light-gray border-brand-light-gray text-brand-black hover:bg-stone-200 placeholder:text-brand-gray focus:border-brand-black",
-  DARK = baseInputClasses + " " + "bg-brand-black text-white hover:bg-neutral-700",
+  NONE = "bg-transparent text-current dark:placeholder:text-brand-light-gray p-0",
+  LIGHT = `${baseInputClasses}
+  bg-brand-light-gray/[.45]
+  border-transparent
+  text-brand-black
+  dark:text-brand-white
+  placeholder:text-brand-gray/50
+  dark:placeholder:text-brand-light-gray/[.6]
+  focus:border-brand-black
+  focus-within:border-brand-black
+  dark:focus:border-brand-white
+  dark:focus-within:border-brand-white
+  dark:focus:shadow-[0_0_0_0.25rem_rgba(255,255,255,0.25)]
+  dark:focus-within:shadow-[0_0_0_0.25rem_rgba(255,255,255,0.25)]
+  focus:shadow-[0_0_0_0.25rem_rgba(0,0,0,0.25)]
+  focus-within:shadow-[0_0_0_0.25rem_rgba(0,0,0,0.25)]`,
 }
 </script>
 
