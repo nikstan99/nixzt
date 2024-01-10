@@ -18,6 +18,7 @@
       :content-position-x="DropdownContentPositionX.RIGHT"
       icon="equals"
       :rotate-icon="false"
+      button-name="burger-menu"
     >
       <div
         class="w-[230px] divide-y divide-brand-gray/25 dark:divide-brand-gray/50"

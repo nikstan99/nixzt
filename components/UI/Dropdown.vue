@@ -16,6 +16,7 @@
       ]"
       :icon="icon"
       :icon-position="IconPosition.RIGHT"
+      :name="buttonName"
     >
       <template v-if="!slotToggle">
         {{ label }}
@@ -77,6 +78,7 @@
     type: ButtonStyle;
     label?: string;
     buttonClass?: string;
+    buttonName?: string;
     slotToggle?: boolean;
     icon?: string;
     rotateIcon?: boolean;
@@ -90,6 +92,7 @@
     icon: 'angle-down',
     rotateIcon: true,
     slotToggle: false,
+    buttonName: 'dropdwon',
   });
 
   const emits = defineEmits(['active', 'transitionStart', 'transitionEnd']);
